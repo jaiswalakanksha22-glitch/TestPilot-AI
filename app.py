@@ -1,36 +1,83 @@
 import streamlit as st
+from services.ai_service import generate_test_cases
 
-# Configure the page
+# -----------------------------
+# Page Configuration
+# -----------------------------
 st.set_page_config(
     page_title="AI QA Copilot",
     page_icon="🤖",
     layout="wide"
 )
 
-# Main title
-st.title("🤖 AI QA Copilot")
+# -----------------------------
+# Sidebar
+# -----------------------------
+with st.sidebar:
+    st.title("⚙️ Settings")
 
-st.subheader("AI-powered Software Testing Assistant")
+    model = st.selectbox(
+        "Select AI Model",
+        [
+            "GPT-4.1",
+            "GPT-4.1-mini"
+        ]
+    )
+
+    test_type = st.multiselect(
+        "Test Types",
+        [
+            "Positive",
+            "Negative",
+            "Boundary",
+            "Edge",
+            "Regression"
+        ],
+        default=[
+            "Positive",
+            "Negative",
+            "Boundary",
+            "Edge"
+        ]
+    )
+
+    st.info("Version 1.0")
+
+# -----------------------------
+# Main Screen
+# -----------------------------
+st.title("🤖 AI QA Copilot")
 
 st.write(
     """
-    Welcome!
-
-    This application helps QA Engineers generate intelligent software test cases
-    using Generative AI.
-    """
+Generate intelligent software test cases using Artificial Intelligence.
+"""
 )
 
-# User Story Input
 user_story = st.text_area(
-    "Enter User Story",
-    height=200,
-    placeholder="Example: As a user, I want to log into the application using my email and password..."
+    "Enter Requirement / User Story",
+    height=220,
+    placeholder="""Example:
+
+As a registered user,
+I should be able to log in using my email and password
+so that I can access my dashboard.
+"""
 )
 
-# Generate Button
-if st.button("Generate Test Cases"):
-    if user_story.strip():
-        st.success("Great! AI integration will be added in the next step.")
+generate = st.button("🚀 Generate Test Cases")
+
+if generate:
+
+    if user_story.strip() == "":
+        st.warning("Please enter a requirement.")
+
     else:
-        st.warning("Please enter a user story first.")
+
+        with st.spinner("Generating AI Test Cases..."):
+
+            result = generate_test_cases(user_story)
+
+        st.success("Done!")
+
+        st.markdown(result)
