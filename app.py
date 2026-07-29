@@ -1,11 +1,12 @@
 import streamlit as st
-from services.ai_service import generate_test_cases
+from services.llm_service import generate_test_cases
+from utils.export_excel import export_to_excel
 
 # -----------------------------
 # Page Configuration
 # -----------------------------
 st.set_page_config(
-    page_title="AI QA Copilot",
+    page_title="TestPilot AI",
     page_icon="🤖",
     layout="wide"
 )
@@ -14,15 +15,46 @@ st.set_page_config(
 # Sidebar
 # -----------------------------
 with st.sidebar:
-    st.title("⚙️ Settings")
 
-    model = st.selectbox(
-        "Select AI Model",
+    st.title("🚀 TestPilot AI")
+
+    st.caption("AI-Powered Software Testing Assistant")
+
+    st.markdown("""
+    Welcome to **TestPilot AI**.
+
+    Generate high-quality software testing artifacts from natural language requirements.
+
+    ### Current Features
+    - ✅ Functional Test Cases
+    - ✅ Positive Test Cases
+    - ✅ Negative Test Cases
+    - ✅ Boundary Test Cases
+    - ✅ Edge Test Cases
+
+    ### Coming Soon
+    - 📄 PDF Requirement Upload
+    - 🌐 API Test Case Generation
+    - 🗄 SQL Validation Queries
+    - 📊 Test Data Generator
+    """)
+    st.markdown("---")
+
+    feature = st.selectbox(
+        "Choose AI Feature",
         [
-            "GPT-4.1",
-            "GPT-4.1-mini"
+            "Generate Test Cases",
+            "Generate API Test Cases",
+            "Generate SQL Validation",
+            "Generate Test Data",
+            "Requirement Summary",
+            "Risk Analysis"
         ]
     )
+
+    st.markdown("---")
+
+    st.success("Version 1.0")
 
     test_type = st.multiselect(
         "Test Types",
@@ -46,11 +78,13 @@ with st.sidebar:
 # -----------------------------
 # Main Screen
 # -----------------------------
-st.title("🤖 AI QA Copilot")
+st.title("🤖 TestPilot AI")
 
 st.write(
     """
-Generate intelligent software test cases using Artificial Intelligence.
+Generate intelligent software test cases, API test scenarios,
+SQL validation queries, test data, and requirement summaries
+using Large Language Models.
 """
 )
 
@@ -69,15 +103,37 @@ generate = st.button("🚀 Generate Test Cases")
 
 if generate:
 
-    if user_story.strip() == "":
+    if not user_story.strip():
         st.warning("Please enter a requirement.")
 
     else:
 
-        with st.spinner("Generating AI Test Cases..."):
+        with st.spinner("🤖 AI is generating professional test cases..."):
 
-            result = generate_test_cases(user_story)
+            try:
 
-        st.success("Done!")
+                result = generate_test_cases(user_story)
 
-        st.markdown(result)
+                st.success("✅ Test Cases Generated Successfully")
+
+                st.divider()
+
+                st.subheader("Generated Test Cases")
+
+                st.markdown(result)
+
+                # Export to Excel
+                file = export_to_excel(result)
+
+                with open(file, "rb") as f:
+                    st.download_button(
+                    label="📥 Download Excel",
+                    data=f,
+                    file_name="TestCases.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+
+            except Exception as e:
+
+                st.error(str(e))
+        
