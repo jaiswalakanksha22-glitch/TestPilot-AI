@@ -1,26 +1,53 @@
-from openpyxl import Workbook
+import re
+import pandas as pd
 
 
-def export_to_excel(test_cases, filename="exports/TestCases.xlsx"):
+def export_to_excel(result):
 
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Test Cases"
+    pattern = r"(\|.+\|\n\|[-:| ]+\|\n(?:\|.*\|\n?)*)"
 
-    ws.append(["ID", "Test Case"])
+    tables = re.findall(pattern, result)
 
-    lines = test_cases.split("\n")
+    filename = "exports/TestCases.xlsx"
 
-    count = 1
+    if not tables:
+        with open(filename.replace(".xlsx", ".txt"), "w") as f:
+            f.write(result)
+        return filename.replace(".xlsx", ".txt")
 
-    for line in lines:
+    writer = pd.ExcelWriter(filename)
 
-        if line.strip():
+    sheet = 1
 
-            ws.append([count, line])
+    for table in tables:
 
-            count += 1
+        lines = table.split("\n")
 
-    wb.save(filename)
+        headers = [
+            h.strip()
+            for h in lines[0].strip("|").split("|")
+        ]
+
+        rows = []
+
+        for row in lines[2:]:
+
+            if row.strip():
+
+                rows.append(
+                    [c.strip() for c in row.strip("|").split("|")]
+                )
+
+        df = pd.DataFrame(rows, columns=headers)
+
+        df.to_excel(
+            writer,
+            sheet_name=f"Table{sheet}",
+            index=False
+        )
+
+        sheet += 1
+
+    writer.close()
 
     return filename

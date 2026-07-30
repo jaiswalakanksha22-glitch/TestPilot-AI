@@ -1,0 +1,28 @@
+As an API consumer,
+
+I should be able to authenticate using a secure Login API,
+
+so that I can access protected endpoints.
+
+API Details
+
+Method: POST
+
+Endpoint:
+/api/v1/login
+
+Request Body
+
+- username
+- password
+
+Acceptance Criteria
+
+- Valid credentials should return HTTP 200.
+- Response should contain JWT Access Token.
+- Invalid credentials should return HTTP 401.
+- Missing required fields should return HTTP 400.
+- Response time should be less than 2 seconds.
+- Token expiration time should be included.
+- Sensitive information such as passwords should never be returned.
+- Failed login attempts should be logged.

@@ -1,0 +1,18 @@
+As a new user,
+
+I should be able to create an account by providing my personal details,
+
+so that I can access the application using my own credentials.
+
+Acceptance Criteria
+
+- First Name is mandatory.
+- Last Name is mandatory.
+- Email address must be unique.
+- Password must contain at least 8 characters.
+- Password must include uppercase, lowercase, number, and special character.
+- Confirm Password must match Password.
+- User must accept Terms and Conditions.
+- Verification email should be sent after successful registration.
+- User should not be able to register with an existing email address.
+- Account should remain inactive until email verification is completed.

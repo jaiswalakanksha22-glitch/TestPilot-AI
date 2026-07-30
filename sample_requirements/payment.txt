@@ -1,0 +1,17 @@
+As a customer,
+
+I should be able to pay for my order using multiple payment methods,
+
+so that I can complete my purchase securely.
+
+Acceptance Criteria
+
+- User can pay using Credit Card, Debit Card, UPI, or Net Banking.
+- Payment amount must match the order total.
+- Invalid card details should display an error message.
+- Payment gateway timeout should display an appropriate message.
+- Successful payment should generate a Transaction ID.
+- Payment confirmation email should be sent.
+- Failed transactions should not create duplicate orders.
+- User should be able to retry failed payments.
+- Payment status should be updated immediately after gateway response.

@@ -1,0 +1,16 @@
+As a patient,
+
+I should be able to book an appointment with a doctor,
+
+so that I can receive medical consultation at my preferred time.
+
+Acceptance Criteria
+
+- User can search doctors by specialty.
+- Available appointment slots should be displayed.
+- Past dates cannot be selected.
+- Double booking for the same slot is not allowed.
+- Appointment confirmation should be sent via email.
+- User should be able to cancel appointments before the scheduled time.
+- Appointment history should be visible in the user's profile.
+- Doctor availability should update after successful booking.

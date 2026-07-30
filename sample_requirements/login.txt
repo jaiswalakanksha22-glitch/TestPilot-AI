@@ -1,0 +1,17 @@
+As a registered banking customer,
+
+I should be able to log in using my registered email address and password,
+
+so that I can securely access my account dashboard.
+
+Acceptance Criteria
+
+- Email address is mandatory.
+- Password is mandatory.
+- Invalid credentials should display an error message.
+- Account should be locked after five consecutive failed login attempts.
+- Forgot Password link should be available.
+- Remember Me option should be supported.
+- Successful login should redirect the user to the dashboard.
+- Session timeout should occur after 15 minutes of inactivity.
+- User activity should be recorded in the audit log.
