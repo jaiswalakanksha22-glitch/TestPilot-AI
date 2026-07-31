@@ -4,6 +4,7 @@ import streamlit as st
 
 
 def markdown_table_to_df(table_text):
+
     lines = [line.strip() for line in table_text.split("\n") if line.strip()]
 
     if len(lines) < 3:
@@ -14,16 +15,14 @@ def markdown_table_to_df(table_text):
     rows = []
 
     for line in lines[2:]:
+
         if not line.startswith("|"):
             continue
 
         cols = [c.strip() for c in line.strip("|").split("|")]
 
-        # Skip malformed rows
-        if len(cols) != len(headers):
-            continue
-
-        rows.append(cols)
+        if len(cols) == len(headers):
+            rows.append(cols)
 
     if not rows:
         return None
@@ -33,7 +32,6 @@ def markdown_table_to_df(table_text):
 
 def render_output(result, feature):
 
-    # Normal markdown features
     if feature in [
         "Requirement Summary",
         "Generate SQL Validation",
@@ -42,53 +40,64 @@ def render_output(result, feature):
         st.markdown(result)
         return
 
-    # Remove markdown code fences
     result = result.replace("```markdown", "")
     result = result.replace("```", "")
 
-    # Show report title
-    title_match = re.search(r"# (.+)", result)
+    title = re.search(r"#\s+(.+)", result)
 
-    if title_match:
-        st.header(title_match.group(1))
+    if title:
+        st.header(title.group(1))
 
-    # Find every section
+    # Accept headings with or without numbering
     section_pattern = r"##\s*(?:\d+\.\s*)?(.+?)\n(.*?)(?=\n##|\Z)"
 
-    sections = re.findall(section_pattern, result, re.S)
+    sections = re.findall(section_pattern, result, flags=re.S)
+
+    if not sections:
+        sections = [("Results", result)]
 
     icons = {
-        "Positive Test Cases": "✅",
-        "Negative Test Cases": "❌",
-        "Boundary Test Cases": "📏",
-        "Edge Test Cases": "⚠️",
-        "Regression Test Cases": "🔄",
-        "API Test Cases": "🌐",
-        "Test Data": "📊"
+
+        "Positive Test Cases":"✅",
+        "Negative Test Cases":"❌",
+        "Boundary Test Cases":"📏",
+        "Edge Test Cases":"⚠️",
+        "Regression Test Cases":"🔄",
+
+        "Positive API Tests":"🌐✅",
+        "Negative API Tests":"🌐❌",
+        "Boundary API Tests":"🌐📏",
+        "Edge API Tests":"🌐⚠️",
+
+        "API Test Cases":"🌐",
+        "Test Data":"📊"
+
     }
 
-    for title, content in sections:
+    for heading, content in sections:
 
-        title = title.strip()
+        heading = heading.strip()
 
-        st.subheader(f"{icons.get(title,'📄')} {title}")
+        st.subheader(f"{icons.get(heading,'📄')} {heading}")
 
-        table_match = re.search(
-            r"\|.*?\|\n\|[-| :]+\|\n(?:\|.*\|\n?)+",
+        tables = re.findall(
+            r"\|.*?\|\n\|[-:| ]+\|\n(?:\|.*\|\n?)+",
             content,
-            re.S
+            flags=re.S
         )
 
-        if table_match:
+        if tables:
 
-            df = markdown_table_to_df(table_match.group())
+            for table in tables:
 
-            if df is not None:
-                st.dataframe(
-                    df,
-                    use_container_width=True,
-                    hide_index=True
-                )
+                df = markdown_table_to_df(table)
+
+                if df is not None:
+                    st.dataframe(
+                        df,
+                        use_container_width=True,
+                        hide_index=True
+                    )
 
         else:
             st.markdown(content)

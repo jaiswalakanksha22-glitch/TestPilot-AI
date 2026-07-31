@@ -413,9 +413,8 @@ if generate:
                     result = generate_test_data(user_story)
                 
                 elif feature == "Generate API Test Cases":
-                    st.write("✅ Calling API Test Case Generator...")
                     result = generate_api_test_cases(user_story)
-                    st.write(result)
+                    
 
                 else:
                     result = "🚧 This feature is coming soon."
