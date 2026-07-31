@@ -427,6 +427,7 @@ if generate:
 
                 with tab1:
                     section_header(f"📄 {section_title}", "#059669")
+                    
                     render_output(result, feature)
 
                 with tab2:

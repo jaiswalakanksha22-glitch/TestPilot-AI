@@ -4,6 +4,7 @@ import streamlit as st
 
 
 def markdown_table_to_df(table_text):
+    """Convert a markdown table into a dataframe."""
 
     lines = [line.strip() for line in table_text.split("\n") if line.strip()]
 
@@ -32,6 +33,7 @@ def markdown_table_to_df(table_text):
 
 def render_output(result, feature):
 
+    # Plain markdown outputs
     if feature in [
         "Requirement Summary",
         "Generate SQL Validation",
@@ -40,66 +42,66 @@ def render_output(result, feature):
         st.markdown(result)
         return
 
+    # Remove markdown fences
     result = result.replace("```markdown", "")
     result = result.replace("```", "")
 
-    title = re.search(r"#\s+(.+)", result)
+    # Overall report title
+    report = re.search(r"#\s+(.+)", result)
 
-    if title:
-        st.header(title.group(1))
+    if report:
+        st.markdown(f"## 📄 {report.group(1)}")
 
-    # Accept headings with or without numbering
-    section_pattern = r"##\s*(?:\d+\.\s*)?(.+?)\n(.*?)(?=\n##|\Z)"
-
-    sections = re.findall(section_pattern, result, flags=re.S)
-
-    if not sections:
-        sections = [("Results", result)]
+    # Split using every ## heading
+    sections = re.split(r"(?=^#{1,2}\s)", result, flags=re.MULTILINE)
 
     icons = {
-
-        "Positive Test Cases":"✅",
-        "Negative Test Cases":"❌",
-        "Boundary Test Cases":"📏",
-        "Edge Test Cases":"⚠️",
-        "Regression Test Cases":"🔄",
-
-        "Positive API Tests":"🌐✅",
-        "Negative API Tests":"🌐❌",
-        "Boundary API Tests":"🌐📏",
-        "Edge API Tests":"🌐⚠️",
-
-        "API Test Cases":"🌐",
-        "Test Data":"📊"
-
+        "Positive Test Cases": "✅",
+        "Negative Test Cases": "❌",
+        "Boundary Test Cases": "📏",
+        "Edge Test Cases": "⚠️",
+        "Regression Test Cases": "🔄",
+        "Positive API Tests": "✅",
+        "Negative API Tests": "❌",
+        "Boundary API Tests": "📏",
+        "Edge API Tests": "⚠️",
+        "API Test Cases": "🌐",
+        "Generated Test Data": "📊",
+        "Test Data": "📊"
     }
 
-    for heading, content in sections:
+    for section in sections:
 
-        heading = heading.strip()
+        if not section.strip():
+            continue
 
-        st.subheader(f"{icons.get(heading,'📄')} {heading}")
+        lines = section.strip().split("\n")
 
-        tables = re.findall(
-            r"\|.*?\|\n\|[-:| ]+\|\n(?:\|.*\|\n?)+",
-            content,
-            flags=re.S
+        title = re.sub(r"^#{1,2}\s*", "", lines[0]).strip()
+
+        # Remove numbering such as "1. Positive Test Cases"
+        title = re.sub(r"^\d+\.\s*", "", title)
+
+        st.subheader(f"{icons.get(title,'📄')} {title}")
+
+        table_match = re.search(
+            r"(\|.+\|\n\|[-:| ]+\|\n(?:\|.*\|\n?)*)",
+            section
         )
 
-        if tables:
+        if table_match:
 
-            for table in tables:
+            df = markdown_table_to_df(table_match.group(1))
 
-                df = markdown_table_to_df(table)
-
-                if df is not None:
-                    st.dataframe(
-                        df,
-                        use_container_width=True,
-                        hide_index=True
-                    )
+            if df is not None:
+                st.dataframe(
+                    df,
+                    use_container_width=True,
+                    hide_index=True
+                )
 
         else:
-            st.markdown(content)
+            body = "\n".join(lines[1:])
+            st.markdown(body)
 
         st.divider()

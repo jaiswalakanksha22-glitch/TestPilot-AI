@@ -1,42 +1,86 @@
 def build_api_prompt(requirement):
 
     return f"""
-You are a Senior API Test Engineer.
+You are a Senior QA Automation Engineer and REST API Testing Expert.
 
 Requirement:
-
 {requirement}
 
-Generate professional REST API test cases.
+Generate COMPLETE REST API test cases.
 
-Return the following sections:
+IMPORTANT RULES:
 
-# Positive API Tests
+1. Generate ALL of the following sections.
+2. NEVER skip any section.
+3. Every section must contain AT LEAST 5 test cases.
+4. If a section is not applicable, create realistic generic test cases instead of omitting it.
+5. Return ONLY Markdown.
+6. Do NOT include explanations.
+7. Use proper Markdown tables.
 
-# Negative API Tests
+---------------------------------------------------------
 
-# Authentication Tests
+## Positive API Tests
 
-# Authorization Tests
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
 
-# Status Code Validation
+(Generate minimum 5)
 
-# Request Validation
+---------------------------------------------------------
 
-# Response Validation
+## Negative API Tests
 
-# Performance Checks
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
 
-Use Markdown tables.
+(Generate minimum 5)
 
-Each test case must include:
+---------------------------------------------------------
 
-- Test Case ID
-- Scenario
-- Request
-- Expected Status Code
-- Expected Response
-- Priority
+## Authentication Tests
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
+
+---------------------------------------------------------
+
+## Authorization Tests
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
+
+---------------------------------------------------------
+
+## Status Code Validation
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
+
+---------------------------------------------------------
+
+## Request Validation
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
+
+---------------------------------------------------------
+
+## Response Validation
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
+
+---------------------------------------------------------
+
+## Performance Checks
+
+| Test Case ID | Scenario | Request | Expected Status Code | Expected Response | Priority |
+
+(Generate minimum 5)
 
 Return Markdown only.
 """
