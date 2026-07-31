@@ -151,7 +151,7 @@ streamlit run app.py
 
 **Akanksha Jaiswal**
 
-MS in Artificial Intelligence | QA Engineer | AI Enthusiast
+AI Enthusiast
 
 ---
 
