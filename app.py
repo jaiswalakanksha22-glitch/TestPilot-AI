@@ -24,6 +24,55 @@ st.set_page_config(
 )
 st.markdown("""
 <style>
+
+/* Main background */
+.stApp{
+    background-color:#FFFFFF;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"]{
+    background:#F7F8FA;
+}
+
+/* Buttons */
+.stButton>button{
+    background:#2563EB;
+    color:white;
+    border-radius:8px;
+    border:none;
+    height:45px;
+    font-weight:600;
+}
+
+.stButton>button:hover{
+    background:#1D4ED8;
+}
+
+/* Text Area */
+textarea{
+    border-radius:8px !important;
+}
+
+/* Metric Cards */
+[data-testid="stMetric"]{
+    background:#F8FAFC;
+    border:1px solid #E5E7EB;
+    padding:15px;
+    border-radius:10px;
+}
+
+/* Tabs */
+button[data-baseweb="tab"]{
+    font-size:16px;
+    font-weight:600;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
 [data-testid="stMetricValue"] {
     font-size: 0.8rem;
 }
@@ -33,21 +82,45 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
+# -----------------------------
+# Enterprise Section Header
+# -----------------------------
+def section_header(title, color="#2563EB"):
+    st.markdown(
+        f"""
+<div style="
+background:#F8FAFC;
+border-left:6px solid {color};
+padding:10px 14px;
+border-radius:8px;
+font-size:18px;
+font-weight:600;
+margin-top:8px;
+margin-bottom:12px;
+">
+{title}
+</div>
+""",
+        unsafe_allow_html=True,
+    )
 # -----------------------------
 # Sidebar
 # -----------------------------
 with st.sidebar:
 
-    st.title("🚀 TestPilot AI")
+    st.title("TestPilot AI")
 
-    st.caption("AI-Powered Software Testing Assistant")
+    st.caption(
+    "Enterprise AI Assistant for Software Testing"
+    )
 
     st.markdown("""
-    Welcome to **TestPilot AI**.
+    AI-Powered QA Assistant
 
     Generate high-quality software testing artifacts from natural language requirements.
 
-    Current Features
+    Feature
 
     ✅ Test Cases
 
@@ -59,16 +132,10 @@ with st.sidebar:
 
     ✅ Test Data Generator
 
-    Coming Soon
-
-    📄 Requirement Upload
-
-    📊 Dashboard
-
-    📑 PDF Export
     """)
     st.markdown("---")
 
+    section_header("🚀 AI Features", "#2563EB")
     feature = st.selectbox(
         "Choose AI Feature",
         [
@@ -81,8 +148,8 @@ with st.sidebar:
         ]
     )
     st.markdown("---")
-
-    st.subheader("📂 Sample Requirements")
+    
+    section_header("📂 Sample Requirements", "#0F766E")
 
     sample = st.selectbox(
         "Choose Sample Requirement",
@@ -94,10 +161,22 @@ with st.sidebar:
 
     if sample != "None":
         sample_text = load_sample(sample)
-
+    
     if sample != "None":
-        st.success(f"✅ {sample} loaded")
+        st.markdown(f"""
+    <div style="
+    background:#E8F1FD;
+    padding:12px;
+    border-left:5px solid #2563EB;
+    border-radius:8px;
+    margin-bottom:10px;
+    ">
+    <b>📄 Sample Requirement Loaded</b><br>
+    {sample}
+    </div>
+    """, unsafe_allow_html=True)
 
+    
         with st.expander("Preview Requirement"):
             preview = sample_text
 
@@ -139,15 +218,73 @@ with st.sidebar:
 # -----------------------------
 # Main Screen
 # -----------------------------
-st.title("🤖 TestPilot AI")
+#Removing space above the heading
+st.markdown("""
+<style>
 
-st.write(
-    """
-Generate intelligent software test cases, API test scenarios,
-SQL validation queries, test data, and requirement summaries
-using Large Language Models.
-"""
-)
+/* Remove Streamlit top padding */
+.block-container{
+    padding-top:0rem;
+    padding-bottom:1rem;
+    padding-left:2rem;
+    padding-right:2rem;
+}
+
+/* Remove extra top spacing */
+div[data-testid="stAppViewContainer"]{
+    padding-top:0rem;
+}
+
+/* Optional: remove space above first element */
+.main .block-container{
+    margin-top:0rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+#adding coloured bar and heading
+st.markdown("""
+<div style="
+background:linear-gradient(90deg,#1E3A8A,#2563EB);
+padding:28px 40px;
+margin:-1rem -2rem 30px -2rem;
+border-radius:0px;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
+
+<div>
+<h1 style="
+margin:0;
+font-size:42px;
+font-weight:700;
+color:white;
+">
+🤖 TestPilot AI
+</h1>
+
+<p style="
+margin:6px 0 0 0;
+font-size:18px;
+color:#DBEAFE;
+">
+Enterprise AI Assistant for Software Testing
+</p>
+</div>
+
+<div style="text-align:right;">
+<div style="font-size:14px;color:#BFDBFE;">Powered by</div>
+<div style="font-size:24px;font-weight:bold;">Qwen 2.5</div>
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+#The app details tab
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -160,21 +297,27 @@ with col1:
     "Risk Analysis"
     ]
 
-    st.metric("AI Features", len(features))
+    st.metric("Available Features", len(features))
 
 with col2:
-    st.metric("LLM", "Qwen 2.5")
+    st.metric("LLM AI Model", "Qwen 2.5")
 
 with col3:
-    st.metric("Version", "1.0")
+    st.metric("Current Version", "1.0")
 
-st.markdown(
+section_header("📝 Requirement Input", "#7C3AED")
+
+st.caption(
     "Describe your software requirement below and let TestPilot AI generate professional QA artifacts."
 )
 
+label = "📝 Requirement / User Story"
+
+if sample != "None":
+    label = "📝 Sample Requirement (Editable)"
 
 user_story = st.text_area(
-    "📝 Requirement / User Story",
+    label,
     value=sample_text,
     height=220,
     placeholder="""Example:
@@ -193,6 +336,8 @@ button_labels = {
     "Generate API Test Cases": "🌐 Generate API Tests",
     "Risk Analysis": "⚠️ Analyze Risks"
 }
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
@@ -280,15 +425,29 @@ if generate:
                 tab1, tab2 = st.tabs(["📄 AI Output", "ℹ️ About"])
 
                 with tab1:
-                    st.subheader(section_title)
+                    section_header(f"📄 {section_title}", "#059669")
                     render_output(result, feature)
 
                 with tab2:
-                    st.write("### Feature")
-                    st.info(feature)
+                    st.markdown("### Project Information")
 
-                    st.write("### AI Model")
-                    st.success("Qwen 2.5-7B-Instruct")
+                    st.markdown(f"""
+                    **Feature**
+
+                    {feature}
+
+                    **AI Model**
+
+                    Qwen 2.5-7B-Instruct
+
+                    **Developer**
+
+                    Akanksha Jaiswal
+
+                    **Framework**
+
+                    Python • Streamlit • Hugging Face
+                    """)
 
                     st.write("### Generated By")
                     st.write("TestPilot AI")

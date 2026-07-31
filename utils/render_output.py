@@ -3,9 +3,37 @@ import pandas as pd
 import streamlit as st
 
 
-def render_output(result: str, feature: str):
+def markdown_table_to_df(table_text):
+    lines = [line.strip() for line in table_text.split("\n") if line.strip()]
 
-    # Features that don't contain tables
+    if len(lines) < 3:
+        return None
+
+    headers = [h.strip() for h in lines[0].strip("|").split("|")]
+
+    rows = []
+
+    for line in lines[2:]:
+        if not line.startswith("|"):
+            continue
+
+        cols = [c.strip() for c in line.strip("|").split("|")]
+
+        # Skip malformed rows
+        if len(cols) != len(headers):
+            continue
+
+        rows.append(cols)
+
+    if not rows:
+        return None
+
+    return pd.DataFrame(rows, columns=headers)
+
+
+def render_output(result, feature):
+
+    # Normal markdown features
     if feature in [
         "Requirement Summary",
         "Generate SQL Validation",
@@ -14,76 +42,55 @@ def render_output(result: str, feature: str):
         st.markdown(result)
         return
 
-    # Remove markdown fences
-    result = re.sub(r"```[\w]*", "", result)
+    # Remove markdown code fences
+    result = result.replace("```markdown", "")
     result = result.replace("```", "")
 
-    # Find every markdown table
-    tables = re.findall(
-        r"((?:#+.*?\n)?\|.+?\|\n\|[-:| ]+\|\n(?:\|.*?\|\n?)*)",
-        result,
-        flags=re.DOTALL
-    )
+    # Show report title
+    title_match = re.search(r"# (.+)", result)
 
-    if not tables:
-        st.markdown(result)
-        return
+    if title_match:
+        st.header(title_match.group(1))
+
+    # Find every section
+    section_pattern = r"##\s*(?:\d+\.\s*)?(.+?)\n(.*?)(?=\n##|\Z)"
+
+    sections = re.findall(section_pattern, result, re.S)
 
     icons = {
-        "Positive": "✅",
-        "Negative": "❌",
-        "Boundary": "📏",
-        "Edge": "⚠️",
-        "Regression": "🔄",
-        "API": "🌐",
+        "Positive Test Cases": "✅",
+        "Negative Test Cases": "❌",
+        "Boundary Test Cases": "📏",
+        "Edge Test Cases": "⚠️",
+        "Regression Test Cases": "🔄",
+        "API Test Cases": "🌐",
         "Test Data": "📊"
     }
 
-    for table in tables:
+    for title, content in sections:
 
-        lines = table.strip().split("\n")
+        title = title.strip()
 
-        title = "Generated Output"
+        st.subheader(f"{icons.get(title,'📄')} {title}")
 
-        # Detect heading before the table
-        if lines[0].startswith("#"):
-            title = lines[0].replace("#", "").strip()
-            table_lines = lines[1:]
-        else:
-            table_lines = lines
-
-        icon = "📄"
-
-        for key in icons:
-            if key.lower() in title.lower():
-                icon = icons[key]
-                break
-
-        st.subheader(f"{icon} {title}")
-
-        headers = [
-            h.strip()
-            for h in table_lines[0].strip("|").split("|")
-        ]
-
-        rows = []
-
-        for row in table_lines[2:]:
-
-            cols = [
-                c.strip()
-                for c in row.strip("|").split("|")
-            ]
-
-            if len(cols) == len(headers):
-                rows.append(cols)
-
-        df = pd.DataFrame(rows, columns=headers)
-
-        st.dataframe(
-            df,
-            use_container_width=True,
-            hide_index=True
+        table_match = re.search(
+            r"\|.*?\|\n\|[-| :]+\|\n(?:\|.*\|\n?)+",
+            content,
+            re.S
         )
+
+        if table_match:
+
+            df = markdown_table_to_df(table_match.group())
+
+            if df is not None:
+                st.dataframe(
+                    df,
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+        else:
+            st.markdown(content)
 
         st.divider()

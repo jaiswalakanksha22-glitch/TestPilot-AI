@@ -29,7 +29,7 @@ def ask_llm(system_role, prompt):
     response = client.chat.completions.create(
         model=MODEL,
         messages=messages,
-        max_tokens=1200,
+        max_tokens=2500,
         temperature=0.3
     )
 
