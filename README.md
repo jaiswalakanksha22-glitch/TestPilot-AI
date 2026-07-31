@@ -130,7 +130,8 @@ streamlit run app.py
 
 ### Home Page
 
-<img width="2736" height="1640" alt="image" src="https://github.com/user-attachments/assets/d45e1ff9-9788-4238-a785-9e9e38fe83a4" />
+<img width="2734" height="1572" alt="home_page" src="https://github.com/user-attachments/assets/85401dd0-df79-4a9b-a56c-aa58a68218a2" />
+
 
 
 ---
